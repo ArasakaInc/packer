@@ -9,7 +9,7 @@
 
 * **Breaking Change**: Support for loading plugin binaries following
      the naming convention of packer-plugin-name has been dropped. Packer will now only load
-     plugins stored under PACKER_PLUGIN_PATH using the expected namespaced
+     plugins stored under the [Packer plugin directory](https://developer.hashicorp.com/packer/docs/configure#packer-s-plugin-directory) using the expected namespaced
      directory and CHECKSUM files. This change drops support for loading plugin
      binaries in Packer's executable directory or a template's current working
      directory. [GH-12828](https://github.com/hashicorp/packer/pull/12828)
@@ -46,7 +46,7 @@
 * core: Bump github.com/hashicorp/packer-plugin-sdk from 0.5.2 to 0.5.3
      [GH-12932](https://github.com/hashicorp/packer/pull/12932)
 * core: Move to predictable plugin loading schema -  Packer will now only load
-     plugins stored under PACKER_PLUGIN_PATH using the expected namespaced
+     plugins stored under the [Packer plugin directory](https://developer.hashicorp.com/packer/docs/configure#packer-s-plugin-directory) using the expected namespaced
      directory and CHECKSUM files.
      [GH-12828](https://github.com/hashicorp/packer/pull/12828)
 * core: Remove support loading single-component plugins.
@@ -62,6 +62,22 @@
      command. This addition makes it possible to pipe commands like
      `packer plugins installed` with it for speedy cleanup of installed plugins.
      [GH-12886](https://github.com/hashicorp/packer/pull/12886)
+* core: Relax Packer source address URIs within the `required_plugins` block to
+     support the installation of local plugin binary using a custom or internal
+     source address (e.g. mycompay.com/plugins/happyorg/happycloud). Remote
+     installation using `packer init` or `packer plugins install`  does not
+     support non-GitHub source URIs. Users using internal source URIs must
+     install plugins manually using `packer plugins install --path`.
+     [GH-12911](https://github.com/hashicorp/packer/pull/12911)
+* core: Remote plugins installed containing an internal version number that
+     differs from the version number within the binary name can lead to
+     confusion when tracking Packer plugin version information. To help track
+     such deprecates in the plugin version, `packer init` and `packer plugin
+     install` have been updated to install such plugins as dev versions (e.g.
+     1.0.0-dev). Users are encouraged to notify plugin maintainers of any
+     version mismatches.
+     [GH-12915](https://github.com/hashicorp/packer/pull/12915)
+
 * core: Version metadata support for plugins. Plugins may now formally have metadata
      in their versions, Packer supports it, and applies the semver recommendations on
      them, i.e. they are ignored for comparison/sorting purposes, but allowed for
@@ -114,6 +130,9 @@ If, however, a 1.1.1 release version of the plugin is available, it will have pr
      but lexicographically inferior will be loaded.
      Ex: 1.0.9 vs. 1.0.10; `1.0.9 > 1.0.10` lexicographically, but semantically
      `1.0.10 > 1.0.9`
+* core/hcp: fix potential race condition when storing plugin details to the HCP
+     Packer metadata storage map.
+     [GH-12936](https://github.com/hashicorp/packer/pull/12936)
 
 
 ## 1.10.3 (April 22, 2024)
