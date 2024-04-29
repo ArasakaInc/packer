@@ -1,6 +1,10 @@
 ## 1.11.0 (Upcoming)
 
 ### NOTES:
+* A LICENSE.txt file has been added to the Packer release artifacts.
+     [GH-12931](https://github.com/hashicorp/packer/pull/12931)
+     [GH-12940](https://github.com/hashicorp/packer/pull/12940)
+
 * **Breaking Change**: Support for loading single-component plugins has been removed from Packer. [GH-12785](https://github.com/hashicorp/packer/pull/12785)
 
 * **Breaking Change**: Support for loading plugin binaries following
@@ -23,16 +27,24 @@
 * core: Add `-ignore-prerelease-plugins` flag to disable the use of development
      plugin binaries for the `build` and `validate` commands development plugin
      binaries. [GH-12828](https://github.com/hashicorp/packer/pull/12828)
+     [GH-12882](https://github.com/hashicorp/packer/pull/12882)
+* Packer users can now track Packer version and plugin versions used for each
+     build artifact in HCP Packer.
+     [GH-12866](https://github.com/hashicorp/packer/pull/12866)
 
-### BUG FIXES:
-* core: fix plugin version ordering to not be lexicographic. This fixes an issue
-     with how plugins are discovered by Packer, and ensures proper version ordering.
-     This means that with this change, versions that are semantically greater,
-     but lexicographically inferior will be loaded.
-     Ex: 1.0.9 vs. 1.0.10; `1.0.9 > 1.0.10` lexicographically, but semantically
-     `1.0.10 > 1.0.9`
+
+### SECURITY:
+* Bump github.com/go-jose/go-jose/v3 to address GHSA-c5q2-7r4c-mv6g.
+     [GH-12880](https://github.com/hashicorp/packer/pull/12880)
+* Bump golang.org/x/net to v0.24.0 to address GO-2024-2687.
+     [GH-12924](https://github.com/hashicorp/packer/pull/12924)
+
 
 ### IMPROVEMENTS:
+* core: Bump github.com/hashicorp/hcp-sdk-go from 0.90.0 to 0.92.0.
+     [GH-12935](https://github.com/hashicorp/packer/pull/12935)
+* core: Bump github.com/hashicorp/packer-plugin-sdk from 0.5.2 to 0.5.3
+     [GH-12932](https://github.com/hashicorp/packer/pull/12932)
 * core: Move to predictable plugin loading schema -  Packer will now only load
      plugins stored under PACKER_PLUGIN_PATH using the expected namespaced
      directory and CHECKSUM files.
@@ -95,11 +107,20 @@ If, however, a 1.1.1 release version of the plugin is available, it will have pr
           └── packer-plugin-amazon_v1.1.1_x5.0_darwin_arm64_SHA256SUM
 ```
 
+### BUG FIXES:
+* core: fix plugin version ordering to not be lexicographic. This fixes an issue
+     with how plugins are discovered by Packer, and ensures proper version ordering.
+     This means that with this change, versions that are semantically greater,
+     but lexicographically inferior will be loaded.
+     Ex: 1.0.9 vs. 1.0.10; `1.0.9 > 1.0.10` lexicographically, but semantically
+     `1.0.10 > 1.0.9`
+
+
 ## 1.10.3 (April 22, 2024)
 
 ### NOTES
 * A LICENSE.txt file has been added to the Packer release artifacts.
-     [GH-12981](https://github.com/hashicorp/packer/pull/12931)
+     [GH-12931](https://github.com/hashicorp/packer/pull/12931)
 
 ### FEATURES
 * Packer users can now track Packer version and plugin versions used for each
