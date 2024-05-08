@@ -76,7 +76,7 @@
      install` have been updated to install such plugins as dev versions (e.g.
      1.0.0-dev). Users are encouraged to notify plugin maintainers of any
      version mismatches.
-     [GH-12915](https://github.com/hashicorp/packer/pull/12915)
+     [GH-12915](https://github.com/hashicorp/packer/pull/12915), [GH-12953](https://github.com/hashicorp/packer/pull/12953)
 
 * core: Version metadata support for plugins. Plugins may now formally have metadata
      in their versions, Packer supports it, and applies the semver recommendations on
