@@ -117,6 +117,16 @@ func ParsePluginSourceString(str string) (*Plugin, hcl.Diagnostics) {
 
 	var errs []string
 
+	// For diagnostics we define a fake source range so the diagnostics
+	// don't start with "<nil>"
+	subject := &hcl.Range{
+		Filename: str,
+		Start:    hcl.InitialPos,
+		End: hcl.Pos{
+			Column: len(str) - 1,
+		},
+	}
+
 	if strings.HasPrefix(str, "/") {
 		errs = append(errs, "A source URL must not start with a '/' character.")
 	}
@@ -154,6 +164,7 @@ func ParsePluginSourceString(str string) (*Plugin, hcl.Diagnostics) {
 
 		return nil, diags.Append(&hcl.Diagnostic{
 			Severity: hcl.DiagError,
+			Subject:  subject,
 			Summary:  "Malformed source URL",
 			Detail:   fmt.Sprintf("The provided source URL %q is invalid. The following errors have been discovered:\n%s\nA valid source looks like \"github.com/hashicorp/happycloud\"", str, errsMsg),
 		})
@@ -165,6 +176,7 @@ func ParsePluginSourceString(str string) (*Plugin, hcl.Diagnostics) {
 	if err != nil {
 		diags = diags.Append(&hcl.Diagnostic{
 			Severity: hcl.DiagError,
+			Subject:  subject,
 			Summary:  "Invalid plugin type",
 			Detail:   fmt.Sprintf(`Invalid plugin type %q in source %q: %s"`, givenName, str, err),
 		})
@@ -196,6 +208,7 @@ func ParsePluginSourceString(str string) (*Plugin, hcl.Diagnostics) {
 			if _, err := ParsePluginPart(suggestedType); err == nil {
 				return nil, diags.Append(&hcl.Diagnostic{
 					Severity: hcl.DiagError,
+					Subject:  subject,
 					Summary:  "Invalid plugin type",
 					Detail: fmt.Sprintf("Plugin source %q has a type with the prefix %q, which isn't valid. "+
 						"Although that prefix is often used in the names of version control repositories for Packer plugins, "+
@@ -210,6 +223,7 @@ func ParsePluginSourceString(str string) (*Plugin, hcl.Diagnostics) {
 		// names.
 		return nil, diags.Append(&hcl.Diagnostic{
 			Severity: hcl.DiagError,
+			Subject:  subject,
 			Summary:  "Invalid plugin type",
 			Detail: fmt.Sprintf("Plugin source %q has a type with the prefix %q, which isn't allowed "+
 				"because it would be redundant to name a Packer plugin with that prefix. "+
@@ -224,6 +238,7 @@ func ParsePluginSourceString(str string) (*Plugin, hcl.Diagnostics) {
 	if len(plug.Parts()) > 16 {
 		return nil, diags.Append(&hcl.Diagnostic{
 			Severity: hcl.DiagError,
+			Subject:  subject,
 			Summary:  "Too many parts to source URL",
 			Detail: fmt.Sprintf("The source URL must have at most 16 components, and the one provided has %d.\n"+
 				"This is unsupported by Packer, please consider using a source that has less components to it.\n"+
